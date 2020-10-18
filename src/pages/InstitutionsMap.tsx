@@ -5,9 +5,16 @@ import {Feather} from '@expo/vector-icons';
 
 
 import MapMarker from '../images/map-marker.png';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function App() {
+  const navigation = useNavigation();
+  
+  function handleNavigateToInstitutionDetails(){
+    navigation.navigate('InstitutionDetails')
+  }
+
   return (
     <View style={styles.container}>
       <MapView provider={PROVIDER_GOOGLE}
@@ -27,7 +34,7 @@ export default function App() {
             latitude: -7.3170944,
             longitude: -39.3019392,
         }}>
-          <Callout tooltip onPress={()=>{}}>
+          <Callout tooltip onPress={handleNavigateToInstitutionDetails}>
             <View style={styles.calloutContainer}>
               <Text style={styles.calloutText}>Lar das meninas</Text>
             </View>
