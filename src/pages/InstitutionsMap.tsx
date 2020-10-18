@@ -6,6 +6,7 @@ import {Feather} from '@expo/vector-icons';
 
 import MapMarker from '../images/map-marker.png';
 import { useNavigation } from '@react-navigation/native';
+import { RectButton } from 'react-native-gesture-handler';
 
 
 export default function App() {
@@ -13,6 +14,10 @@ export default function App() {
   
   function handleNavigateToInstitutionDetails(){
     navigation.navigate('InstitutionDetails')
+  }
+  
+  function handleNavigateToCreateInstitution(){
+    navigation.navigate('SelectMapPosition')
   }
 
   return (
@@ -43,11 +48,11 @@ export default function App() {
       </MapView>
       <View style={styles.footer}>
         <Text style={styles.footerText}>1 instituição encontrada</Text>
-        <TouchableOpacity style={styles.createInstitutionButton}
-          onPress={()=>{}}
+        <RectButton style={styles.createInstitutionButton}
+          onPress={handleNavigateToCreateInstitution}
         >
           <Feather name='plus' size={20} color={'#FFF'}/>
-        </TouchableOpacity>
+        </RectButton>
 
       </View>
     </View>
