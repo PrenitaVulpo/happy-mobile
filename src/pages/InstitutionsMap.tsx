@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect}from 'react';
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Callout, Marker} from 'react-native-maps';
 import {Feather} from '@expo/vector-icons';
@@ -7,13 +7,28 @@ import {Feather} from '@expo/vector-icons';
 import MapMarker from '../images/map-marker.png';
 import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
+import api from '../services/api';
+
+interface Institution {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+}
 
 
 export default function App() {
+  const [institutions, setInstitutions] = useState<Institution[]>([])
   const navigation = useNavigation();
+
+  useEffect(()=>{
+    api.get('institutions').then(response=>{
+      setInstitutions(response.data)
+    })
+  }, [])
   
-  function handleNavigateToInstitutionDetails(){
-    navigation.navigate('InstitutionDetails')
+  function handleNavigateToInstitutionDetails(id:number){
+    navigation.navigate('InstitutionDetails', {id})
   }
   
   function handleNavigateToCreateInstitution(){
@@ -30,24 +45,29 @@ export default function App() {
           latitudeDelta: 0.008,
           longitudeDelta: 0.008
       }}>
-        <Marker icon={MapMarker}
-          calloutAnchor={{
-            x: 2.7,
-            y: 0.8
-          }}
-          coordinate={{
-            latitude: -7.3170944,
-            longitude: -39.3019392,
-        }}>
-          <Callout tooltip onPress={handleNavigateToInstitutionDetails}>
-            <View style={styles.calloutContainer}>
-              <Text style={styles.calloutText}>Lar das meninas</Text>
-            </View>
-          </Callout>
-        </Marker>
+        {institutions.map(institution=>{
+          return (
+            <Marker key={institution.id} 
+              icon={MapMarker}
+              calloutAnchor={{
+                x: 2.7,
+                y: 0.8
+              }}
+              coordinate={{
+                latitude: institution.latitude,
+                longitude: institution.longitude,
+            }}>
+              <Callout tooltip onPress={() => handleNavigateToInstitutionDetails(institution.id)}>
+                <View style={styles.calloutContainer}>
+                  <Text style={styles.calloutText}>{institution.name}</Text>
+                </View>
+              </Callout>
+            </Marker>
+          );
+        })}
       </MapView>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>1 instituição encontrada</Text>
+        <Text style={styles.footerText}>{institutions.length} instituições encontradas</Text>
         <RectButton style={styles.createInstitutionButton}
           onPress={handleNavigateToCreateInstitution}
         >
